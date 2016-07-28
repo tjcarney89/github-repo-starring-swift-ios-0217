@@ -40,5 +40,31 @@ class ReposTableViewController: UITableViewController {
 
         return cell
     }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let selectedRepo = store.repositories[indexPath.row]
+        store.toggleStarStatusForRepository(selectedRepo) { (isStarred) in
+            if isStarred {
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.createAlert("You just starred", repoFullName: selectedRepo.fullName)
+                })
+            }
+            else {
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.createAlert("You just unstarred", repoFullName: selectedRepo.fullName)
+                })
+            }
+        }
+    }
+        
+    func createAlert(message: String, repoFullName: String) {
+            let alertMessage = "\(message) \(repoFullName)"
+            let alertController = UIAlertController(title: "Success!", message: alertMessage, preferredStyle: .Alert)
+            alertController.accessibilityLabel = alertMessage
+            let ok = UIAlertAction(title: "OK", style: .Default, handler: nil)
+            alertController.addAction(ok)
+            ok.accessibilityLabel = "OK"
+            self.presentViewController(alertController, animated: true, completion: nil)
+        }
 
 }
