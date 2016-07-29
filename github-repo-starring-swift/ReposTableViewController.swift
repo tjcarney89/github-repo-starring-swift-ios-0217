@@ -65,6 +65,6 @@ class ReposTableViewController: UITableViewController {
             alertController.addAction(ok)
             ok.accessibilityLabel = "OK"
             self.presentViewController(alertController, animated: true, completion: nil)
-        }
+    }
 
 }
