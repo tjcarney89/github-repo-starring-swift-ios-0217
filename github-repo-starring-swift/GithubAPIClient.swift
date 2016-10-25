@@ -10,21 +10,21 @@ import UIKit
 
 class GithubAPIClient {
     
-    class func getRepositoriesWithCompletion(completion: (NSArray) -> ()) {
+    class func getRepositoriesWithCompletion(_ completion: @escaping ([Any]) -> ()) {
         let urlString = "\(githubAPIURL)/repositories?client_id=\(githubClientID)&client_secret=\(githubClientSecret)"
-        let url = NSURL(string: urlString)
-        let session = NSURLSession.sharedSession()
+        let url = URL(string: urlString)
+        let session = URLSession.shared
         
         guard let unwrappedURL = url else { fatalError("Invalid URL") }
-        let task = session.dataTaskWithURL(unwrappedURL) { (data, response, error) in
+        let task = session.dataTask(with: unwrappedURL, completionHandler: { (data, response, error) in
             guard let data = data else { fatalError("Unable to get data \(error?.localizedDescription)") }
             
-            if let responseArray = try? NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSArray {
+            if let responseArray = try? JSONSerialization.jsonObject(with: data, options: []) as? [Any] {
                 if let responseArray = responseArray {
                     completion(responseArray)
                 }
             }
-        }
+        }) 
         task.resume()
     }
     
