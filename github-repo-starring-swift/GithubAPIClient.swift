@@ -47,8 +47,8 @@ class GithubAPIClient {
         task.resume()
     }
     
-    class func starRepository(_ fullName: String, completion: @escaping () -> ()) {
-        let urlString = "\(githubAPIURL)/user/starred/\(fullName)?client_id=\(githubClientID)&client_secret=\(githubClientSecret)&access_token=\(githubAccessToken)"
+    class func starRepository(named repository: String, completion: @escaping () -> ()) {
+        let urlString = "\(githubAPIURL)/user/starred/\(repository)?client_id=\(githubClientID)&client_secret=\(githubClientSecret)&access_token=\(githubAccessToken)"
         guard let url = URL(string: urlString) else { assertionFailure("Invalid URL"); return }
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
@@ -61,8 +61,8 @@ class GithubAPIClient {
         task.resume()
     }
     
-    class func unstarRepository(_ fullName: String, completion: @escaping () -> ()) {
-        let urlString = "\(githubAPIURL)/user/starred/\(fullName)?client_id=\(githubClientID)&client_secret=\(githubClientSecret)&access_token=\(githubAccessToken)"
+    class func unstarRepository(named repository: String, completion: @escaping () -> ()) {
+        let urlString = "\(githubAPIURL)/user/starred/\(repository)?client_id=\(githubClientID)&client_secret=\(githubClientSecret)&access_token=\(githubAccessToken)"
         guard let url = URL(string: urlString) else { assertionFailure("Invalid URL"); return }
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"

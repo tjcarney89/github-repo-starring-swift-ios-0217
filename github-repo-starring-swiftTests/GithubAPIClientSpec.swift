@@ -20,7 +20,7 @@ class GithubAPIClientSpec: QuickSpec {
         guard let path = Bundle(for: type(of: self)).path(forResource: "repositories", ofType: "json") else { print("error getting the path"); return }
         
         guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)) else { print("error getting data"); return }
-        let repositoryArray = try? JSONSerialization.jsonObject(with: data, options: [])
+        let repositoryArray = try? JSONSerialization.jsonObject(with: data, options: []) as! NSArray
         
         //stubbing GET repositories
         OHHTTPStubs.stubRequests(passingTest: { (request) -> Bool in
@@ -57,7 +57,7 @@ class GithubAPIClientSpec: QuickSpec {
         describe("getRepositories") {
             it("should get the proper repositories from Github") {
                 waitUntil(action: { (done) in
-                    GithubAPIClient.getRepositories(with: { (repos) in
+                    GithubAPIClient.getRepositories(with: { repos in
                         
                         expect(repos).toNot(beNil())
                         expect(repos.count).to(equal(2))
