@@ -14,7 +14,6 @@ class GithubRepository {
     var repositoryID: String
     
     init(dictionary: [String : Any]) {
-        dump(dictionary)
         guard let
             name = dictionary["full_name"] as? String,
             let valueAsString = dictionary["html_url"] as? String,
