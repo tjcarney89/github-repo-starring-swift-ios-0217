@@ -10,32 +10,32 @@ import UIKit
 
 class GithubAPIClient {
     
-    class func getRepositoriesWithCompletion(completion: (NSArray) -> ()) {
+    class func getRepositoriesWithCompletion(_ completion: @escaping (NSArray) -> ()) {
         let urlString = "\(githubAPIURL)/repositories?client_id=\(githubClientID)&client_secret=\(githubClientSecret)"
-        let url = NSURL(string: urlString)
-        let session = NSURLSession.sharedSession()
+        let url = URL(string: urlString)
+        let session = URLSession.shared
         
         guard let unwrappedURL = url else { fatalError("Invalid URL") }
-        let task = session.dataTaskWithURL(unwrappedURL) { (data, response, error) in
+        let task = session.dataTask(with: unwrappedURL, completionHandler: { (data, response, error) in
             guard let data = data else { fatalError("Unable to get data \(error?.localizedDescription)") }
             
-            if let responseArray = try? NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSArray {
+            if let responseArray = try? JSONSerialization.jsonObject(with: data, options: []) as? NSArray {
                 if let responseArray = responseArray {
                     completion(responseArray)
                 }
             }
-        }
+        }) 
         task.resume()
     }
     
-    class func checkIfRepositoryIsStarred(fullName: String, completion: (Bool) -> ()) {
+    class func checkIfRepositoryIsStarred(_ fullName: String, completion: @escaping (Bool) -> ()) {
         let urlString = "\(githubAPIURL)/user/starred/\(fullName)?client_id=\(githubClientID)&client_secret=\(githubClientSecret)&access_token=\(githubAccessToken)"
-        guard let url = NSURL(string: urlString) else { assertionFailure("Invalid URL"); return }
-        let request = NSURLRequest(URL: url)
-        let session = NSURLSession.sharedSession()
+        guard let url = URL(string: urlString) else { assertionFailure("Invalid URL"); return }
+        let request = URLRequest(url: url)
+        let session = URLSession.shared
         
-        let task = session.dataTaskWithRequest(request) { (data, response, error) in
-            guard let httpResponse = response as? NSHTTPURLResponse else { assertionFailure("Unable to get response \(error?.localizedDescription)"); return }
+        let task = session.dataTask(with: request) { (data, response, error) in
+            guard let httpResponse = response as? HTTPURLResponse else { assertionFailure("Unable to get response \(error?.localizedDescription)"); return }
             if httpResponse.statusCode == 204 {
                 completion(true)
             }
@@ -47,28 +47,28 @@ class GithubAPIClient {
         task.resume()
     }
     
-    class func starRepository(fullName: String, completion: () -> ()) {
+    class func starRepository(_ fullName: String, completion: @escaping () -> ()) {
         let urlString = "\(githubAPIURL)/user/starred/\(fullName)?client_id=\(githubClientID)&client_secret=\(githubClientSecret)&access_token=\(githubAccessToken)"
-        guard let url = NSURL(string: urlString) else { assertionFailure("Invalid URL"); return }
-        let request = NSMutableURLRequest(URL: url)
-        request.HTTPMethod = "PUT"
-        let session = NSURLSession.sharedSession()
+        guard let url = URL(string: urlString) else { assertionFailure("Invalid URL"); return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        let session = URLSession.shared
         
-        let task = session.dataTaskWithRequest(request) { (data, response, error) in
+        let task = session.dataTask(with: request) { (data, response, error) in
             completion()
         }
         
         task.resume()
     }
     
-    class func unstarRepository(fullName: String, completion: () -> ()) {
+    class func unstarRepository(_ fullName: String, completion: @escaping () -> ()) {
         let urlString = "\(githubAPIURL)/user/starred/\(fullName)?client_id=\(githubClientID)&client_secret=\(githubClientSecret)&access_token=\(githubAccessToken)"
-        guard let url = NSURL(string: urlString) else { assertionFailure("Invalid URL"); return }
-        let request = NSMutableURLRequest(URL: url)
-        request.HTTPMethod = "DELETE"
-        let session = NSURLSession.sharedSession()
+        guard let url = URL(string: urlString) else { assertionFailure("Invalid URL"); return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        let session = URLSession.shared
         
-        let task = session.dataTaskWithRequest(request) { (data, response, error) in
+        let task = session.dataTask(with: request) { (data, response, error) in
             completion()
         }
         

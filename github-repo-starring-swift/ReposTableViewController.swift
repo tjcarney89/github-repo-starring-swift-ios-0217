@@ -19,7 +19,7 @@ class ReposTableViewController: UITableViewController {
         self.tableView.accessibilityIdentifier = "tableView"
         
         store.getRepositoriesWithCompletion {
-            NSOperationQueue.mainQueue().addOperationWithBlock({ 
+            OperationQueue.main.addOperation({ 
                 self.tableView.reloadData()
             })
         }
@@ -27,44 +27,44 @@ class ReposTableViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.store.repositories.count
     }
 
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("repoCell", forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "repoCell", for: indexPath)
 
-        let repository:GithubRepository = self.store.repositories[indexPath.row]
+        let repository:GithubRepository = self.store.repositories[(indexPath as NSIndexPath).row]
         cell.textLabel?.text = repository.fullName
 
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let selectedRepo = store.repositories[indexPath.row]
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedRepo = store.repositories[(indexPath as NSIndexPath).row]
         store.toggleStarStatusForRepository(selectedRepo) { (isStarred) in
             if isStarred {
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.createAlert("You just starred", repoFullName: selectedRepo.fullName)
+                DispatchQueue.main.async(execute: {
+                    self.showAlert("You just starred", repoFullName: selectedRepo.fullName)
                 })
             }
             else {
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.createAlert("You just unstarred", repoFullName: selectedRepo.fullName)
+                DispatchQueue.main.async(execute: {
+                    self.showAlert("You just unstarred", repoFullName: selectedRepo.fullName)
                 })
             }
         }
     }
         
-    func createAlert(message: String, repoFullName: String) {
+    func showAlert(_ message: String, repoFullName: String) {
             let alertMessage = "\(message) \(repoFullName)"
-            let alertController = UIAlertController(title: "Success!", message: alertMessage, preferredStyle: .Alert)
+            let alertController = UIAlertController(title: "Success!", message: alertMessage, preferredStyle: .alert)
             alertController.accessibilityLabel = alertMessage
-            let ok = UIAlertAction(title: "OK", style: .Default, handler: nil)
+            let ok = UIAlertAction(title: "OK", style: .default, handler: nil)
             alertController.addAction(ok)
             ok.accessibilityLabel = "OK"
-            self.presentViewController(alertController, animated: true, completion: nil)
+            self.present(alertController, animated: true, completion: nil)
         }
 
 }

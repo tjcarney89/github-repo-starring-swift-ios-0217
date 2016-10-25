@@ -11,11 +11,11 @@ import UIKit
 class ReposDataStore {
     
     static let sharedInstance = ReposDataStore()
-    private init() {}
+    fileprivate init() {}
     
     var repositories:[GithubRepository] = []
     
-    func getRepositoriesWithCompletion(completion: () -> ()) {
+    func getRepositoriesWithCompletion(_ completion: @escaping () -> ()) {
         GithubAPIClient.getRepositoriesWithCompletion { (reposArray) in
             self.repositories.removeAll()
             for dictionary in reposArray {
@@ -28,7 +28,7 @@ class ReposDataStore {
         }
     }
     
-    func toggleStarStatusForRepository(repository: GithubRepository, toggleCompletion: (Bool) -> ()) {
+    func toggleStarStatusForRepository(_ repository: GithubRepository, toggleCompletion: @escaping (Bool) -> ()) {
         GithubAPIClient.checkIfRepositoryIsStarred(repository.fullName) { (isStarred) in
             if isStarred {
                 GithubAPIClient.unstarRepository(repository.fullName, completion: {

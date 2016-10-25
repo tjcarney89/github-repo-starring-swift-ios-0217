@@ -17,41 +17,41 @@ class GithubAPIClientSpec: QuickSpec {
     
     override func spec() {
         
-        guard let path = NSBundle(forClass: self.dynamicType).pathForResource("repositories", ofType: "json") else { print("error getting the path"); return }
+        guard let path = Bundle(for: type(of: self)).path(forResource: "repositories", ofType: "json") else { print("error getting the path"); return }
         
-        guard let data = NSData(contentsOfFile: path) else { print("error getting data"); return }
-        let repositoryArray = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
+        guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)) else { print("error getting data"); return }
+        let repositoryArray = try? JSONSerialization.jsonObject(with: data, options: [])
         
         //stubbing GET repositories
-        OHHTTPStubs.stubRequestsPassingTest({ (request) -> Bool in
-            return(request.URL?.host == "api.github.com" && request.URL?.path == "/repositories")
+        OHHTTPStubs.stubRequests(passingTest: { (request) -> Bool in
+            return(request.url?.host == "api.github.com" && request.url?.path == "/repositories")
             
         }) { (request) -> OHHTTPStubsResponse in
-            return OHHTTPStubsResponse(fileAtPath: OHPathForFileInBundle("repositories.json", NSBundle(forClass: self.dynamicType))!, statusCode: 200, headers: ["Content-Type" : "application/json"])
+            return OHHTTPStubsResponse(fileAtPath: OHPathForFileInBundle("repositories.json", Bundle(for: type(of: self)))!, statusCode: 200, headers: ["Content-Type" : "application/json"])
         }
         
         //stubbing GET star status
-        OHHTTPStubs.stubRequestsPassingTest({ (request) -> Bool in
-            return(request.URL?.host == "api.github.com" && request.URL?.path == "/user/starred/wycats/merb-core")
+        OHHTTPStubs.stubRequests(passingTest: { (request) -> Bool in
+            return(request.url?.host == "api.github.com" && request.url?.path == "/user/starred/wycats/merb-core")
             
         }) { (request) -> OHHTTPStubsResponse in
             if self.starred == true {
-                return OHHTTPStubsResponse(data: NSData(), statusCode: 204, headers: nil)
+                return OHHTTPStubsResponse(data: Data(), statusCode: 204, headers: nil)
             }
             else {
-                return OHHTTPStubsResponse(fileAtPath: OHPathForFileInBundle("not_starred.json", NSBundle(forClass: self.dynamicType))!, statusCode: 404, headers: ["Content-Type" : "application/json"])
+                return OHHTTPStubsResponse(fileAtPath: OHPathForFileInBundle("not_starred.json", Bundle(for: type(of: self)))!, statusCode: 404, headers: ["Content-Type" : "application/json"])
             }
             
         }
         
         //stubbing PUT/DELETE star
-        OHHTTPStubs.stubRequestsPassingTest({ (request) -> Bool in
-            let urlCheck = (request.URL?.host == "api.github.com" && request.URL?.path == "/user/starred/wycats/merb-core")
-            let httpMethodCheck = (request.HTTPMethod == "PUT" || request.HTTPMethod == "DELETE")
+        OHHTTPStubs.stubRequests(passingTest: { (request) -> Bool in
+            let urlCheck = (request.url?.host == "api.github.com" && request.url?.path == "/user/starred/wycats/merb-core")
+            let httpMethodCheck = (request.httpMethod == "PUT" || request.httpMethod == "DELETE")
             return urlCheck && httpMethodCheck
             
         }) { (request) -> OHHTTPStubsResponse in
-            return OHHTTPStubsResponse(data: NSData(), statusCode: 204, headers: nil)
+            return OHHTTPStubsResponse(data: Data(), statusCode: 204, headers: nil)
         }
         
         describe("getRepositories") {
@@ -75,7 +75,7 @@ class GithubAPIClientSpec: QuickSpec {
                     return(request.URL?.host == "api.github.com" && request.URL?.path == "/user/starred/wycats/merb-core")
                     
                 }) { (request) -> OHHTTPStubsResponse in
-                    return OHHTTPStubsResponse(fileAtPath: OHPathForFileInBundle("not_starred.json", NSBundle(forClass: self.dynamicType))!, statusCode: 404, headers: ["Content-Type" : "application/json"])
+                    return OHHTTPStubsResponse(fileAtPath: OHPathForFileInBundle("not_starred.json", Bundle(forClass: type(of: self)))!, statusCode: 404, headers: ["Content-Type" : "application/json"])
 
                 }
                 waitUntil(action: { (done) in
