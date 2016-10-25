@@ -13,17 +13,18 @@ class GithubRepository {
     var htmlURL: URL
     var repositoryID: String
     
-    init(dictionary: NSDictionary) {
+    init(dictionary: [String : Any]) {
+        dump(dictionary)
         guard let
             name = dictionary["full_name"] as? String,
             let valueAsString = dictionary["html_url"] as? String,
             let valueAsURL = URL(string: valueAsString),
-            let repoID = (dictionary["id"] as AnyObject).stringValue
+            let repoID = dictionary["id"] as? Int
             else { fatalError("Could not create repository object from supplied dictionary") }
         
         htmlURL = valueAsURL
         fullName = name
-        repositoryID = repoID
+        repositoryID = String(repoID)
     }
     
 }

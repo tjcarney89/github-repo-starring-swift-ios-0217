@@ -14,7 +14,7 @@ target 'github-repo-starring-swift' do
     pod 'OHHTTPStubs'
     pod 'Quick'
     pod 'Nimble'
-    pod 'KIF', :configurations => ['Debug']
+    pod 'KIF', '~> 3.0', :configurations => ['Debug']
   end
 
   target 'github-repo-starring-swiftUITests' do

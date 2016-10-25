@@ -71,11 +71,11 @@ class GithubAPIClientSpec: QuickSpec {
         
         describe("checkIfRepositoryIsStarred") {
             it("should respond false if the given repo is not starred") {
-                OHHTTPStubs.stubRequestsPassingTest({ (request) -> Bool in
-                    return(request.URL?.host == "api.github.com" && request.URL?.path == "/user/starred/wycats/merb-core")
+                OHHTTPStubs.stubRequests(passingTest: { (request) -> Bool in
+                    return(request.url?.host == "api.github.com" && request.url?.path == "/user/starred/wycats/merb-core")
                     
                 }) { (request) -> OHHTTPStubsResponse in
-                    return OHHTTPStubsResponse(fileAtPath: OHPathForFileInBundle("not_starred.json", Bundle(forClass: type(of: self)))!, statusCode: 404, headers: ["Content-Type" : "application/json"])
+                    return OHHTTPStubsResponse(fileAtPath: OHPathForFileInBundle("not_starred.json", Bundle(for: type(of: self)))!, statusCode: 404, headers: ["Content-Type" : "application/json"])
 
                 }
                 waitUntil(action: { (done) in
@@ -87,11 +87,11 @@ class GithubAPIClientSpec: QuickSpec {
             }
             
             it("should respond true if the given repo is starred") {
-                OHHTTPStubs.stubRequestsPassingTest({ (request) -> Bool in
-                    return(request.URL?.host == "api.github.com" && request.URL?.path == "/user/starred/wycats/merb-core")
+                OHHTTPStubs.stubRequests(passingTest: { (request) -> Bool in
+                    return(request.url?.host == "api.github.com" && request.url?.path == "/user/starred/wycats/merb-core")
                     
                 }) { (request) -> OHHTTPStubsResponse in
-                    return OHHTTPStubsResponse(data: NSData(), statusCode: 204, headers: nil)
+                    return OHHTTPStubsResponse(data: Data(), statusCode: 204, headers: nil)
                     
                 }
                 waitUntil(action: { (done) in
