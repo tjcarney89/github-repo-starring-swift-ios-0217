@@ -61,7 +61,7 @@ class GithubAPIClientSpec: QuickSpec {
                         
                         expect(repos).toNot(beNil())
                         expect(repos.count).to(equal(2))
-                        expect(repos).to(equal(repositoryArray as? [Any]))
+                        expect(repos).to(equal(repositoryArray! as? [Any]))
                         done()
                         
                     })
@@ -87,11 +87,11 @@ class GithubAPIClientSpec: QuickSpec {
             }
             
             it("should respond true if the given repo is starred") {
-                OHHTTPStubs.stubRequestsPassingTest({ (request) -> Bool in
+                OHHTTPStubs.stubRequests(passingTest: { (request) -> Bool in
                     return(request.url?.host == "api.github.com" && request.url?.path == "/user/starred/wycats/merb-core")
                     
                 }) { (request) -> OHHTTPStubsResponse in
-                    return OHHTTPStubsResponse(data: NSData(), statusCode: 204, headers: nil)
+                    return OHHTTPStubsResponse(data: Data(), statusCode: 204, headers: nil)
                     
                 }
                 waitUntil(action: { (done) in
