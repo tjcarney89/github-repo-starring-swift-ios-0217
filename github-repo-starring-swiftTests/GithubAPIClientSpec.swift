@@ -102,10 +102,5 @@ class GithubAPIClientSpec: QuickSpec {
                 })
             }
         }
-        
-            
-            
-        
-        
     }
 }
