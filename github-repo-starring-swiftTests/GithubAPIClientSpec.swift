@@ -11,6 +11,7 @@ import Nimble
 import OHHTTPStubs
 
 @testable import github_repo_starring_swift
+
 class GithubAPIClientSpec: QuickSpec {
     
     var starred = false
@@ -63,7 +64,6 @@ class GithubAPIClientSpec: QuickSpec {
                         expect(repos.count).to(equal(2))
 //                        expect(repos).to(equal(repositoryArray))
                         done()
-                        
                     })
                 })
             }
@@ -102,10 +102,5 @@ class GithubAPIClientSpec: QuickSpec {
                 })
             }
         }
-        
-            
-            
-        
-        
     }
 }

@@ -18,11 +18,11 @@ class ReposTableViewController: UITableViewController {
         self.tableView.accessibilityLabel = "tableView"
         self.tableView.accessibilityIdentifier = "tableView"
         
-        store.getRepositoriesWithCompletion {
+        store.getRepositories(with: {
             OperationQueue.main.addOperation({ 
                 self.tableView.reloadData()
             })
-        }
+        })
     }
 
     // MARK: - Table view data source
