@@ -15,8 +15,8 @@ class ReposDataStore {
     
     var repositories:[GithubRepository] = []
     
-    func getRepositoriesWithCompletion(_ completion: @escaping () -> ()) {
-        GithubAPIClient.getRepositoriesWithCompletion { (reposArray) in
+    func getRepositories(with completion: @escaping () -> ()) {
+        GithubAPIClient.getRepositories { (reposArray) in
             self.repositories.removeAll()
             for dictionary in reposArray {
                 guard let repoDictionary = dictionary as? [String : Any] else { fatalError("Object in reposArray is of non-dictionary type") }
