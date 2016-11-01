@@ -10,7 +10,7 @@ import UIKit
 
 class GithubAPIClient {
     
-    class func getRepositoriesWithCompletion(_ completion: @escaping ([Any]) -> ()) {
+    class func getRepositories(with completion: @escaping ([Any]) -> ()) {
         let urlString = "\(githubAPIURL)/repositories?client_id=\(githubClientID)&client_secret=\(githubClientSecret)"
         let url = URL(string: urlString)
         let session = URLSession.shared
