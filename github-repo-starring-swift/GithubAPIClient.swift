@@ -11,7 +11,7 @@ import UIKit
 class GithubAPIClient {
     
     class func getRepositories(with completion: @escaping ([Any]) -> ()) {
-        let urlString = "\(githubAPIURL)/repositories?client_id=\(githubClientID)&client_secret=\(githubClientSecret)"
+        let urlString = "https://api.github.com/repositories?client_id=\(ID)&client_secret=\(secret)"
         let url = URL(string: urlString)
         let session = URLSession.shared
         
@@ -28,5 +28,79 @@ class GithubAPIClient {
         task.resume()
     }
     
-}
+    class func checkIfRepositoryIsStarred(fullName: String, completion: @escaping (Bool) -> Void) {
+        let urlString = "https://api.github.com/user/starred/\(fullName)"
+        let url = URL(string: urlString)
+        if let url = url {
+            var urlRequest = URLRequest(url: url)
+            urlRequest.addValue("token \(token)", forHTTPHeaderField: "Authorization")
+            let session = URLSession.shared
+            let dataTask = session.dataTask(with: urlRequest, completionHandler: { (data, response, error) in
+                if let response = response {
+                    do {
+                        if let responseJSON = response as? HTTPURLResponse {
+                            if responseJSON.statusCode == 204 {
+                                completion(true)
+                            } else if responseJSON.statusCode == 404 {
+                                completion(false)
+                            }
 
+                            print(responseJSON.statusCode)
+                        }
+                    } catch {
+                        
+                    }
+                }
+            })
+            dataTask.resume()
+            
+        }
+    }
+    
+    class func starRepository(named: String, completion: @escaping () -> Void) {
+        GithubAPIClient.checkIfRepositoryIsStarred(fullName: named) { (starred) in
+            if starred == false {
+                let urlString = "https://api.github.com/user/starred/\(named)"
+                let url = URL(string: urlString)
+                if let url = url {
+                    var urlRequest = URLRequest(url: url)
+                    urlRequest.addValue("token \(token)", forHTTPHeaderField: "Authorization")
+                    urlRequest.httpMethod = "PUT"
+                    let session = URLSession.shared
+                    let dataTask = session.dataTask(with: urlRequest)
+                    dataTask.resume()
+                }
+            }
+            completion()
+            
+
+
+            
+        }
+    }
+    
+    class func unstarRepository(named: String, completion: @escaping () -> Void) {
+        GithubAPIClient.checkIfRepositoryIsStarred(fullName: named) { (starred) in
+            if starred == true {
+                let urlString = "https://api.github.com/user/starred/\(named)"
+                let url = URL(string: urlString)
+                if let url = url {
+                    var urlRequest = URLRequest(url: url)
+                    urlRequest.addValue("token \(token)", forHTTPHeaderField: "Authorization")
+                    urlRequest.httpMethod = "DELETE"
+                    let session = URLSession.shared
+                    let dataTask = session.dataTask(with: urlRequest)
+                    dataTask.resume()
+                }
+            }
+            completion()
+            
+            
+            
+            
+        }
+    }
+
+    
+    
+}

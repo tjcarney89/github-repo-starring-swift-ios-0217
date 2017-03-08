@@ -23,7 +23,13 @@ class ReposTableViewController: UITableViewController {
                 self.tableView.reloadData()
             })
         }
+        
+        
+        
+        
     }
+    
+    
 
     // MARK: - Table view data source
 
@@ -39,6 +45,27 @@ class ReposTableViewController: UITableViewController {
         cell.textLabel?.text = repository.fullName
 
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let repo = self.store.repositories[indexPath.row]
+        self.store.toggleStarStatus(for: repo) { (starred) in
+            if starred == false {
+                let myAlert = UIAlertController(title: "Unstarred", message: "You just unstarred \(repo.fullName)", preferredStyle: .alert)
+                let myAction = UIAlertAction(title: "Dismiss", style: .default, handler: { action in self.dismiss(animated: true, completion: nil) } )
+                myAlert.addAction(myAction)
+                self.present(myAlert, animated: true)
+                myAlert.accessibilityLabel = "You just unstarred \(repo.fullName)"
+                print("You just unstarred that repo")
+            } else if starred == true {
+                let myAlert = UIAlertController(title: "Starred", message: "You just starred \(repo.fullName)", preferredStyle: .alert)
+                let myAction = UIAlertAction(title: "Dismiss", style: .default, handler: { action in self.dismiss(animated: true, completion: nil) } )
+                myAlert.addAction(myAction)
+                self.present(myAlert, animated: true)
+                myAlert.accessibilityLabel = "You just starred \(repo.fullName)"
+                print("You just starred that repo")
+            }
+        }
     }
 
 }
